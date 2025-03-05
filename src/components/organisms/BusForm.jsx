@@ -31,6 +31,8 @@ const BusForm = ({
   setDepreciationCost,
   margin,
   setMargin,
+  totalKm,
+  handleTotalChange,
 }) => (
   <>
     <div className="grid grid-cols-1 gap-4">
@@ -88,6 +90,13 @@ const BusForm = ({
       />
     </div>
     <DistanceInput distance={distance} setDistance={setDistance} />
+    <div className="grid grid-cols-1 gap-4 mt-4">
+     <InputField
+        value={totalKm}
+        onChange={handleTotalChange}
+        label="📍Total Jarak (km)"
+      />
+    </div>
     <CostInput
       fuelPrice={fuelPrice}
       maintenancePrice={maintenancePrice}
@@ -98,7 +107,7 @@ const BusForm = ({
       depreciationCost={depreciationCost}
       setDepreciationCost={setDepreciationCost}
     />
-    <div className="grid grid-cols-2 gap-4 mt-4">
+    <div className="grid grid-cols-1 gap-4 mt-4">
       <InputField
         label="📊 Margin (%)"
         value={margin}

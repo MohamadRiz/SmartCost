@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BusForm from "../components/organisms/BusForm";
 import CalculationResults from "../components/organisms/CalculationResults";
 import jsPDF from "jspdf";
@@ -19,9 +19,9 @@ const BusRentCalculator = () => {
   const [margin, setMargin] = useState(10);
   const [tripCount, setTripCount] = useState(1);
   const [calculated, setCalculated] = useState(false);
+  const [totalKm, setTotalKm] = useState(0);
 
-  const totalKm = ((distance["a_B"] + distance["b_A"]) * tripCount * shifCount) + 
-                      ((distance["pool_A"] + distance["b_Pool"]) * shifCount);
+  
   const fuelCost = ((totalKm / 3) * fuelPrice) * busCount;
   const driverCost = (driverFee * driverCount) * shifCount;
   const maintenanceCost = totalKm * maintenancePrice * busCount;
@@ -31,6 +31,46 @@ const BusRentCalculator = () => {
   const totalRent = totaloperational * dayCount * busCount + (totaloperational * (margin / 100));
   const totalDailyRent = totalRent / dayCount;
 
+   // Calculate total KM based on the given formula
+   const calculateTotalKm = () => {
+    return (
+      (distance["a_B"] + distance["b_A"]) * tripCount * shifCount +
+      (distance["pool_A"] + distance["b_Pool"]) * shifCount
+    );
+  };
+
+  // Auto-update total KM when values change
+  useEffect(() => {
+    setTotalKm(calculateTotalKm());
+  }, [distance, tripCount, shifCount]);
+
+  // Handle manual changes to total KM
+  const handleTotalChange = (e) => {
+    const newTotalKm = Number(e.target.value);
+    const currentTotal = calculateTotalKm();
+  
+    if (currentTotal === 0) {
+      // Prevent division by zero: Distribute manually if total was 0
+      const equalShare = newTotalKm / 4;
+      setDistance({
+        pool_A: equalShare,
+        a_B: equalShare,
+        b_A: equalShare,
+        b_Pool: equalShare,
+      });
+    } else {
+      // Adjust each distance proportionally
+      const factor = newTotalKm / currentTotal;
+      const updatedDistances = Object.keys(distance).reduce((acc, key) => {
+        acc[key] = distance[key] * factor;
+        return acc;
+      }, {});
+  
+      setDistance(updatedDistances);
+    }
+  
+    setTotalKm(newTotalKm);
+  };
   const handleCalculate = () => {
     setCalculated(true);
   };
@@ -130,7 +170,7 @@ const BusRentCalculator = () => {
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-xl">
       <h2 className="text-2xl font-bold mb-6 text-center">🚍 SmartCost !</h2>
-      <BusForm {...{ name, setName, busType, setBusType, busCount, setBusCount, dayCount, setDayCount, shifCount, setShifCount, driverCount, setDriverCount,tripCount, setTripCount, distance, setDistance, fuelPrice, setFuelPrice, driverFee, setDriverFee, maintenancePrice, setMaintenancePrice, depreciationCost, setDepreciationCost, margin, setMargin }} />
+      <BusForm {...{ name, setName, busType, setBusType, busCount, setBusCount, dayCount, setDayCount, shifCount, setShifCount, driverCount, setDriverCount,tripCount, setTripCount, distance, setDistance, fuelPrice, setFuelPrice, driverFee, setDriverFee, maintenancePrice, setMaintenancePrice, depreciationCost, setDepreciationCost, margin, setMargin, totalKm, handleTotalChange }} />
       <div className="flex gap-4 mt-4">
         <button onClick={handleCalculate} className="w-full p-2 bg-blue-500 text-white rounded-lg">🧮 Calculate</button>
         <button onClick={handleClear} className="w-1/4 p-2 bg-gray-500 text-white rounded-lg">❌ Clear</button>
