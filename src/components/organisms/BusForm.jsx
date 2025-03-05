@@ -3,9 +3,10 @@ import SelectField from "../atoms/SelectField";
 import InputField from "../atoms/InputField";
 import DistanceInput from "../molecules/DistanceInput";
 import CostInput from "../molecules/CostInput";
+import CheckboxField from "../atoms/CheckboxField";
 
 const BusForm = ({
-  name, 
+  name,
   setName,
   busType,
   setBusType,
@@ -33,6 +34,8 @@ const BusForm = ({
   setMargin,
   totalKm,
   handleTotalChange,
+  hideDistance,
+  setHideDistance,
 }) => (
   <>
     <div className="grid grid-cols-1 gap-4">
@@ -81,17 +84,28 @@ const BusForm = ({
         min="1"
         max="30"
       />
-      <InputField
-        label="📍 Ritanse"
-        value={tripCount}
-        onChange={(e) => setTripCount(Number(e.target.value))}
-        min="1"
-        max="30"
+      {!hideDistance && (
+        <InputField
+          label="📍 Ritanse"
+          value={tripCount}
+          onChange={(e) => setTripCount(Number(e.target.value))}
+          min="1"
+          max="30"
+        />
+      )}
+    </div>
+    <div className="grid grid-cols-1 gap-4 mt-4">
+      <CheckboxField
+        label="Hitung langsung"
+        checked={hideDistance}
+        onChange={() => setHideDistance(!hideDistance)}
       />
     </div>
-    <DistanceInput distance={distance} setDistance={setDistance} />
+    {!hideDistance && (
+      <DistanceInput distance={distance} setDistance={setDistance} />
+    )}
     <div className="grid grid-cols-1 gap-4 mt-4">
-     <InputField
+      <InputField
         value={totalKm}
         onChange={handleTotalChange}
         label="📍Total Jarak (km)"

@@ -11,7 +11,12 @@ const BusRentCalculator = () => {
   const [dayCount, setDayCount] = useState(1);
   const [shifCount, setShifCount] = useState(1);
   const [driverCount, setDriverCount] = useState(1);
-  const [distance, setDistance] = useState({ pool_A: 0, a_B: 0, b_A: 0, b_Pool: 0 });
+  const [distance, setDistance] = useState({
+    pool_A: 0,
+    a_B: 0,
+    b_A: 0,
+    b_Pool: 0,
+  });
   const [fuelPrice, setFuelPrice] = useState(6800);
   const [driverFee, setDriverFee] = useState(539679);
   const [maintenancePrice, setMaintenancePrice] = useState(2086);
@@ -20,35 +25,46 @@ const BusRentCalculator = () => {
   const [tripCount, setTripCount] = useState(1);
   const [calculated, setCalculated] = useState(false);
   const [totalKm, setTotalKm] = useState(0);
+  const [tolPrice, setTolPrice] = useState(0);
+  const [hideDistance, setHideDistance] = useState(false);
+  const [licensePrice, setLicensePrice] = useState(63388);
 
-  
-  const fuelCost = ((totalKm / 3) * fuelPrice) * busCount;
-  const driverCost = (driverFee * driverCount) * shifCount;
+  const fuelCost = (totalKm / 3) * fuelPrice * busCount;
+  const licenseCost = licensePrice * busCount;
+  const driverCost = driverFee * driverCount * shifCount;
   const maintenanceCost = totalKm * maintenancePrice * busCount;
   const totalDepreciationCost = depreciationCost * busCount;
   const totalDepreciationDailyCost = depreciationCost / 25;
-  const totaloperational = fuelCost + maintenanceCost + totalDepreciationDailyCost + driverCost;
-  const totalRent = totaloperational * dayCount * busCount + (totaloperational * (margin / 100));
+  const totaloperational =
+    fuelCost + maintenanceCost + totalDepreciationDailyCost + driverCost + tolPrice + licenseCost;
+  const totalRent =
+    totaloperational * dayCount * busCount + totaloperational * (margin / 100);
   const totalDailyRent = totalRent / dayCount;
 
-   // Calculate total KM based on the given formula
-   const calculateTotalKm = () => {
+  // Calculate total KM
+  const calculateTotalKm = () => {
+    if (hideDistance) {
+      return (
+        (distance["pool_A"] + distance["b_Pool"]) * shifCount +
+        (distance["a_B"] + distance["b_A"]) * shifCount
+      );
+    }
+
     return (
       (distance["a_B"] + distance["b_A"]) * tripCount * shifCount +
       (distance["pool_A"] + distance["b_Pool"]) * shifCount
     );
   };
 
-  // Auto-update total KM when values change
+  // Update total KM when distance, shifCount, or hideDistance changes
   useEffect(() => {
     setTotalKm(calculateTotalKm());
-  }, [distance, tripCount, shifCount]);
-
+  }, [distance, shifCount, hideDistance]);
   // Handle manual changes to total KM
   const handleTotalChange = (e) => {
     const newTotalKm = Number(e.target.value);
     const currentTotal = calculateTotalKm();
-  
+
     if (currentTotal === 0) {
       // Prevent division by zero: Distribute manually if total was 0
       const equalShare = newTotalKm / 4;
@@ -65,10 +81,10 @@ const BusRentCalculator = () => {
         acc[key] = distance[key] * factor;
         return acc;
       }, {});
-  
+
       setDistance(updatedDistances);
     }
-  
+
     setTotalKm(newTotalKm);
   };
   const handleCalculate = () => {
@@ -91,27 +107,27 @@ const BusRentCalculator = () => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
-      minimumFractionDigits: 0, 
+      minimumFractionDigits: 0,
     }).format(Math.round(number));
   };
 
   const handleExportToPDF = () => {
     const doc = new jsPDF();
-    const startDate = new Date(); 
+    const startDate = new Date();
     const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + dayCount); 
-  
+    endDate.setDate(startDate.getDate() + dayCount);
+
     // Format dates as "DD/MM/YYYY"
     const formattedStartDate = startDate.toLocaleDateString("id-ID");
     const formattedEndDate = endDate.toLocaleDateString("id-ID");
-  
+
     doc.setFontSize(18);
     doc.text(`${name} Invoice`, 14, 15);
-  
+
     doc.setFontSize(12);
     doc.text(`Tanggal Awal Sewa: ${formattedStartDate}`, 14, 22);
     doc.text(`Tanggal Akhir Sewa: ${formattedEndDate}`, 14, 28);
-  
+
     const invoiceData = [
       ["Result SmartCost"],
       ["Bus Type", busType],
@@ -145,7 +161,7 @@ const BusRentCalculator = () => {
       ["Total Rent", formatRupiah(totalRent)],
       ["Total Daily Rent", formatRupiah(totalDailyRent)],
     ];
-  
+
     let finalData = [];
     invoiceData.forEach((item) => {
       if (item.length === 1) {
@@ -154,7 +170,7 @@ const BusRentCalculator = () => {
         finalData.push(item);
       }
     });
-  
+
     doc.autoTable({
       startY: 35,
       head: [["Description", "Value"]],
@@ -164,21 +180,90 @@ const BusRentCalculator = () => {
       headStyles: { fillColor: [41, 128, 185] },
     });
     const formattedStateName = name.replace(/[\s.]+/g, "_");
-    doc.save(`${formattedStateName}_Invoice_${formattedStartDate.replace(/\//g, "-")}.pdf`);
+    doc.save(
+      `${formattedStateName}_Invoice_${formattedStartDate.replace(
+        /\//g,
+        "-"
+      )}.pdf`
+    );
   };
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-xl">
       <h2 className="text-2xl font-bold mb-6 text-center">🚍 SmartCost !</h2>
-      <BusForm {...{ name, setName, busType, setBusType, busCount, setBusCount, dayCount, setDayCount, shifCount, setShifCount, driverCount, setDriverCount,tripCount, setTripCount, distance, setDistance, fuelPrice, setFuelPrice, driverFee, setDriverFee, maintenancePrice, setMaintenancePrice, depreciationCost, setDepreciationCost, margin, setMargin, totalKm, handleTotalChange }} />
+      <BusForm
+        {...{
+          name,
+          setName,
+          busType,
+          setBusType,
+          busCount,
+          setBusCount,
+          dayCount,
+          setDayCount,
+          shifCount,
+          setShifCount,
+          driverCount,
+          setDriverCount,
+          tripCount,
+          setTripCount,
+          distance,
+          setDistance,
+          fuelPrice,
+          setFuelPrice,
+          driverFee,
+          setDriverFee,
+          maintenancePrice,
+          setMaintenancePrice,
+          depreciationCost,
+          setDepreciationCost,
+          margin,
+          setMargin,
+          totalKm,
+          handleTotalChange,
+          hideDistance,
+          setHideDistance,
+          tolPrice,
+          setTolPrice,
+        }}
+      />
       <div className="flex gap-4 mt-4">
-        <button onClick={handleCalculate} className="w-full p-2 bg-blue-500 text-white rounded-lg">🧮 Calculate</button>
-        <button onClick={handleClear} className="w-1/4 p-2 bg-gray-500 text-white rounded-lg">❌ Clear</button>
+        <button
+          onClick={handleCalculate}
+          className="w-full p-2 bg-blue-500 text-white rounded-lg"
+        >
+          🧮 Calculate
+        </button>
+        <button
+          onClick={handleClear}
+          className="w-1/4 p-2 bg-gray-500 text-white rounded-lg"
+        >
+          ❌ Clear
+        </button>
       </div>
       {calculated && (
         <>
-          <CalculationResults {...{ totalKm, driverCost, fuelCost, maintenanceCost, totalDepreciationDailyCost, totalDepreciationCost, totaloperational, totalRent, totalDailyRent }} />
-          <button onClick={handleExportToPDF} className="mt-4 w-full p-2 bg-green-500 text-white rounded-lg">📥 Export Invoice</button>
+          <CalculationResults
+            {...{
+              totalKm,
+              driverCost,
+              fuelCost,
+              maintenanceCost,
+              totalDepreciationDailyCost,
+              totalDepreciationCost,
+              totaloperational,
+              totalRent,
+              totalDailyRent,
+              tolPrice,
+              licensePrice
+            }}
+          />
+          <button
+            onClick={handleExportToPDF}
+            className="mt-4 w-full p-2 bg-green-500 text-white rounded-lg"
+          >
+            📥 Export Invoice
+          </button>
         </>
       )}
     </div>
