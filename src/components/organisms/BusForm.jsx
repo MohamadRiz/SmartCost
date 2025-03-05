@@ -36,6 +36,8 @@ const BusForm = ({
   handleTotalChange,
   hideDistance,
   setHideDistance,
+  tolPrice,
+  setTolPrice,
 }) => (
   <>
     <div className="grid grid-cols-1 gap-4">
@@ -120,6 +122,8 @@ const BusForm = ({
       setDriverFee={setDriverFee}
       depreciationCost={depreciationCost}
       setDepreciationCost={setDepreciationCost}
+      tolPrice={tolPrice}
+      setTolPrice={setTolPrice}
     />
     <div className="grid grid-cols-1 gap-4 mt-4">
       <InputField
