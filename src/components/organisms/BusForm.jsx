@@ -77,7 +77,7 @@ const BusForm = ({
         max="30"
       />
       <InputField
-        label="👨‍✈️ Jumlah Primudi"
+        label="👨‍✈️ Jumlah Pramudi"
         value={driverCount}
         onChange={(e) => setDriverCount(Number(e.target.value))}
         min="1"
@@ -91,14 +91,14 @@ const BusForm = ({
         max="30"
       />
       <InputField
-        label="🌙 TKO Jam Produksi"
+        label="🧑 TKO Jam Produksi"
         value={driverFeeTko}
         onChange={(e) => setDriverFeeTko(Number(e.target.value))}
         min="1"
         max="30"
       />
       <InputField
-        label="🌙 TKO Jam Kosong"
+        label="🧑 TKO Jam Kosong"
         value={driverFeeTkoKosong}
         onChange={(e) => setDriverFeeTkoKosong(Number(e.target.value))}
         min="1"

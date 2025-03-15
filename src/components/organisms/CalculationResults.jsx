@@ -3,6 +3,7 @@ import React from "react";
 const CalculationResults = ({ 
   totalKm, 
   driverCost, 
+  tkoCost,
   fuelCost, 
   maintenanceCost, 
   totalDepreciationDailyCost, 
@@ -17,6 +18,7 @@ const CalculationResults = ({
     <h3 className="text-lg font-semibold mb-2">🔍 Hasil Perhitungan</h3>
     <p><strong>Total KM Tempuh:</strong> {Math.round(totalKm)} km</p>
     <p><strong>Total Biaya Pramudi:</strong> Rp {Math.round(driverCost).toLocaleString()}</p>
+    <p><strong>Total Biaya TKO:</strong> Rp {Math.round(tkoCost).toLocaleString()}</p>
     <p><strong>Biaya Bahan Bakar:</strong> Rp {Math.round(fuelCost).toLocaleString()}</p>
     <p><strong>Biaya Perawatan:</strong> Rp {Math.round(maintenanceCost).toLocaleString()}</p>
     <p><strong>Biaya STNK Asuransi Perizinan:</strong> Rp {Math.round(licensePrice).toLocaleString()}</p>

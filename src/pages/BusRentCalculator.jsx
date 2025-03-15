@@ -21,8 +21,8 @@ const BusRentCalculator = () => {
   const [driverFee, setDriverFee] = useState(395609);
   const [driverFeeTko, setDriverFeeTko] = useState(0);
   const [driverFeeTkoKosong, setDriverFeeTkoKosong] = useState(0);
-  const [maintenancePrice, setMaintenancePrice] = useState(2086);
-  const [depreciationCost, setDepreciationCost] = useState(8427234);
+  const [maintenancePrice, setMaintenancePrice] = useState(1901);
+  const [depreciationCost, setDepreciationCost] = useState(8616042);
   const [margin, setMargin] = useState(10);
   const [tripCount, setTripCount] = useState(1);
   const [calculated, setCalculated] = useState(false);
@@ -33,16 +33,27 @@ const BusRentCalculator = () => {
 
   const fuelCost = (totalKm / 3) * fuelPrice * busCount;
   const licenseCost = licensePrice * busCount;
-  const driverCostTkoProduksi =  driverFeeTko * 20125;
-  const drivercostTkokosong = driverFeeTkoKosong * 7500
-  const driverCost = driverFee + driverCostTkoProduksi + drivercostTkokosong * driverCount * shifCount;
+  const driverCostTkoProduksi = driverFeeTko * 20125;
+  const drivercostTkokosong = driverFeeTkoKosong * 7500;
+  const tkoCost = ((driverCostTkoProduksi + drivercostTkokosong) * 1.10) * 1.20;
+  console.log("driverCostTkoProduksi", driverCostTkoProduksi);
+  const driverCost =
+    (driverFee + tkoCost) *
+    driverCount *
+    shifCount;
   const maintenanceCost = totalKm * maintenancePrice * busCount;
+  console.log("first maintenanceCost", maintenanceCost);
   const totalDepreciationCost = depreciationCost * busCount;
-  const totalDepreciationDailyCost = depreciationCost / 25;
+  const totalDepreciationDailyCost = depreciationCost / 22;
   const totaloperational =
-    fuelCost + maintenanceCost + totalDepreciationDailyCost + driverCost + tolPrice + licenseCost;
+    fuelCost +
+    maintenanceCost +
+    totalDepreciationDailyCost +
+    driverCost +
+    tolPrice +
+    licenseCost;
   const totalRent =
-    totaloperational * dayCount * busCount + totaloperational * (margin / 100);
+    ((totaloperational + (totaloperational*(margin / 100))) * dayCount * busCount);
   const totalDailyRent = totalRent / dayCount;
 
   // Calculate total KM
@@ -207,6 +218,10 @@ const BusRentCalculator = () => {
           setDayCount,
           shifCount,
           setShifCount,
+          driverFeeTko,
+          setDriverFeeTko,
+          driverFeeTkoKosong,
+          setDriverFeeTkoKosong,
           driverCount,
           setDriverCount,
           tripCount,
@@ -251,6 +266,7 @@ const BusRentCalculator = () => {
             {...{
               totalKm,
               driverCost,
+              tkoCost,
               fuelCost,
               maintenanceCost,
               totalDepreciationDailyCost,
@@ -259,7 +275,7 @@ const BusRentCalculator = () => {
               totalRent,
               totalDailyRent,
               tolPrice,
-              licensePrice
+              licensePrice,
             }}
           />
           <button
