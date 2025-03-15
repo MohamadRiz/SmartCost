@@ -16,6 +16,10 @@ const BusForm = ({
   setDayCount,
   shifCount,
   setShifCount,
+  driverFeeTko,
+  setDriverFeeTko,
+  driverFeeTkoKosong,
+  setDriverFeeTkoKosong,
   driverCount,
   setDriverCount,
   tripCount,
@@ -83,6 +87,20 @@ const BusForm = ({
         label="🌙 Shif Pekerja"
         value={shifCount}
         onChange={(e) => setShifCount(Number(e.target.value))}
+        min="1"
+        max="30"
+      />
+      <InputField
+        label="🌙 TKO Jam Produksi"
+        value={driverFeeTko}
+        onChange={(e) => setDriverFeeTko(Number(e.target.value))}
+        min="1"
+        max="30"
+      />
+      <InputField
+        label="🌙 TKO Jam Kosong"
+        value={driverFeeTkoKosong}
+        onChange={(e) => setDriverFeeTkoKosong(Number(e.target.value))}
         min="1"
         max="30"
       />

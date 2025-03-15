@@ -18,7 +18,9 @@ const BusRentCalculator = () => {
     b_Pool: 0,
   });
   const [fuelPrice, setFuelPrice] = useState(6800);
-  const [driverFee, setDriverFee] = useState(539679);
+  const [driverFee, setDriverFee] = useState(395609);
+  const [driverFeeTko, setDriverFeeTko] = useState(0);
+  const [driverFeeTkoKosong, setDriverFeeTkoKosong] = useState(0);
   const [maintenancePrice, setMaintenancePrice] = useState(2086);
   const [depreciationCost, setDepreciationCost] = useState(8427234);
   const [margin, setMargin] = useState(10);
@@ -31,7 +33,9 @@ const BusRentCalculator = () => {
 
   const fuelCost = (totalKm / 3) * fuelPrice * busCount;
   const licenseCost = licensePrice * busCount;
-  const driverCost = driverFee * driverCount * shifCount;
+  const driverCostTkoProduksi =  driverFeeTko * 20125;
+  const drivercostTkokosong = driverFeeTkoKosong * 7500
+  const driverCost = driverFee + driverCostTkoProduksi + drivercostTkokosong * driverCount * shifCount;
   const maintenanceCost = totalKm * maintenancePrice * busCount;
   const totalDepreciationCost = depreciationCost * busCount;
   const totalDepreciationDailyCost = depreciationCost / 25;
