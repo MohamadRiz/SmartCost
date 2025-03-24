@@ -206,6 +206,7 @@ const BusRentCalculator = () => {
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-xl">
       <h2 className="text-2xl font-bold mb-6 text-center">🚍 SmartCost !</h2>
+      <h6 className="text-sm mb-6 text-center text-gray-400">By Pengembangan Bisnis Transjakarta</h6>
       <BusForm
         {...{
           name,

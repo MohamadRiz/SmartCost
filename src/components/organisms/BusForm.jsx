@@ -84,7 +84,7 @@ const BusForm = ({
         max="30"
       />
       <InputField
-        label="🌙 Shif Pekerja"
+        label="🌙 Shif Pramudi"
         value={shifCount}
         onChange={(e) => setShifCount(Number(e.target.value))}
         min="1"

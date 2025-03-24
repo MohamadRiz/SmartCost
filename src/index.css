@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+#root{
+    background-image: url(./assets/busway.jpg);
+}
