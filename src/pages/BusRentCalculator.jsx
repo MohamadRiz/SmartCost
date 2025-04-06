@@ -44,7 +44,7 @@ const BusRentCalculator = () => {
   const maintenanceCost = totalKm * maintenancePrice * busCount;
   console.log("first maintenanceCost", maintenanceCost);
   const totalDepreciationCost = depreciationCost * busCount;
-  const totalDepreciationDailyCost = depreciationCost / 22;
+  const totalDepreciationDailyCost = depreciationCost / 23;
   const totaloperational =
     fuelCost +
     maintenanceCost +
