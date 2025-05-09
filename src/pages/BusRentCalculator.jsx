@@ -18,7 +18,7 @@ const BusRentCalculator = () => {
     b_Pool: 0,
   });
   const [fuelPrice, setFuelPrice] = useState(6800);
-  const [driverFee, setDriverFee] = useState(395609);
+  const [driverFee, setDriverFee] = useState(602131);
   const [driverFeeTko, setDriverFeeTko] = useState(0);
   const [driverFeeTkoKosong, setDriverFeeTkoKosong] = useState(0);
   const [maintenancePrice, setMaintenancePrice] = useState(1901);
