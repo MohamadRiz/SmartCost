@@ -112,7 +112,7 @@ const BusRentCalculator = () => {
     setDayCount(1);
     setDistance({ pool_A: 0, a_B: 0, b_A: 0, b_Pool: 0 });
     setFuelPrice(6800);
-    setMaintenancePrice(2086);
+    setMaintenancePrice(3200);
     setDepreciationCost(8427234);
     setMargin(10);
     setCalculated(false);
